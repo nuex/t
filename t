@@ -1,31 +1,21 @@
 #!/bin/sh
 
-[ ! "$DEFAULT_TIMELOG_NAME" ] && DEFAULT_TIMELOG_NAME="timelog"
-
-# Show a balance for the current timelog
-_t_bal() {
-  ledger -f $timelog bal "$@"
-}
-
-# Show total time for today
-_t_hours() {
-  ledger -f $timelog -p "since today" bal
-}
+[ ! "$DEFAULT_TIMELOG_NAME" ] && DEFAULT_TIMELOG_NAME=".timelog.ldg"
 
 # Show current timelog
 _t_timelog() {
   __t_current_timelog
 }
 
-# Switch to a different timelog
-_t_switch() {
-  name="$1"; shift
-  echo "$name" > "$config"
+# Run a ledger command on the timelog
+_t_ledger() {
+  ledger -f $timelog "$@"
 }
 
-# Grep for specific text in the timelog
-_t_grep() {
-  grep "$@" $timelog
+# do something in unix with the timelog
+_t_do() {
+    action=$1; shift
+    ${action} "$@" ${timelog}
 }
 
 # Clock in to the given project
@@ -38,22 +28,41 @@ _t_out() {
   echo o `date '+%Y-%m-%d %H:%M:%S'` $* >>$timelog
 }
 
-# Show the currently clocked-in project
-_t_cur() {
-  tail $timelog -n1 | __t_extract_project
+# switch projects
+_t_sw() {
+  echo o `date '+%Y-%m-%d %H:%M:%S'` >>$timelog
+  echo i `date '+%Y-%m-%d %H:%M:%S'` $* >>$timelog
 }
 
-# Show the last checked in project
+# Show the currently clocked-in project
+_t_cur() {
+  sed -e '/^i/!d;$!d' ${timelog} | __t_extract_project
+}
+
+# Show the last checked out project
 _t_last() {
-  count="$(wc -l $timelog | cut -f 1 -d " ")"
-  number="$(($count - 1))"
-  sed "${number}q;d" $timelog | __t_extract_project
+  sed -ne '/^o/{g;p;};h;' ${timelog} | tail -n 1 | __t_extract_project
 }
 
 # Show usage
 _t_usage() {
   # TODO
-  echo "Usage: t action"
+  cat << EOF
+Usage: t action
+actions:
+     in - clock into project
+     out - clock out of project
+     sw,switch - switch projects
+     bal - show balance
+     hours - show balance for today
+     edit - edit timelog file
+     cur - show currently open project
+     last - show last closed project
+     grep - grep timelog for argument
+     cat - show timelog
+     less - show timelog in pager
+     timelog - show timelog file
+EOF
 }
 
 #
@@ -76,19 +85,24 @@ __t_current_timelog() {
 
 action=$1; shift
 config="$HOME/.t"
-timelog="$TIMELOG_DIR/$(__t_current_timelog).ledger"
+timelog="${HOME}/$(__t_current_timelog)"
 
 case "${action}" in
   in)   _t_in "$@";;
   out)  _t_out "$@";;
+  sw)   _t_sw "$@";;
+  bal) _t_ledger bal "$@";;
+  hours) _t_ledger bal -p "since today" "$@";;
+  switch)   _t_sw "$@";;
+  edit) _t_do $EDITOR "$@";;
   cur)  _t_cur "$@";;
   last) _t_last "$@";;
-  grep) _t_grep "$@";;
+  grep) _t_do grep "$@";;
+  cat)  _t_do cat "$@";;
+  less)  _t_do less;;
   timelog) _t_timelog "$@";;
-  switch) _t_switch "$@";;
-  hours) _t_hours "$@";;
-  bal) _t_bal "$@";;
-  ?)    _t_usage;;
+
+  h)    _t_usage;;
   *)    _t_usage;;
 esac
 
