@@ -30,15 +30,6 @@ Even though this works with [ledger][] 3, the [timelog][] format is only referen
 - [Using timeclock to record billable time][timelog]
 - [timelog files][htl] - from the [hledger][] project
 
-## About ##
-
-I forked this from <https://github.com/nuex/t>.  I'm not trying to maintain compatibility with the original for several reasons:
-
-- I didn't need the timelog file switching capabilities.
-- I changed the `switch` command to switch projects instead of files
-- I changed the default timelog file name.
-- I generalized a 'do' command and the 'ledger' command to easily add commands without having to add more functions in the script.
-
 [ledger]: http://ledger-cli.org
 [timelog]: http://ledger-cli.org/2.6/ledger.html#Using-timeclock-to-record-billable-time
 [htl]: http://hledger.org/MANUAL.html#timelog-files
