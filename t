@@ -19,7 +19,9 @@ _t_do() {
 }
 
 # Clock in to the given project
+# Clock in to the last project if no project is given
 _t_in() {
+  [ ! "$1" ] && set -- "$@" "$(_t_last)"
   echo i `date '+%Y-%m-%d %H:%M:%S'` $* >>$timelog
 }
 
@@ -50,7 +52,7 @@ _t_usage() {
   cat << EOF
 Usage: t action
 actions:
-     in - clock into project
+     in - clock into project or last project
      out - clock out of project
      sw,switch - switch projects
      bal - show balance

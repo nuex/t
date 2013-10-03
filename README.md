@@ -10,7 +10,7 @@ Usage: `t <action>`
 
 ### Actions ###
 
-- `t in` - clock into project
+- `t in` - clock into project or last project
 - `t out` - clock out of project
 - `t sw,switch` - switch projects
 - `t bal` - show balance
