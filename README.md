@@ -4,6 +4,19 @@
 
 t is a shell script for working with [ledger][]'s [timelog][] format.
 
+## Install ##
+
+Download and install the script to a `bin` directory that exists in your `$PATH`. For example, `$HOME/bin`:
+
+    curl --silent -G https://raw.github.com/nuex/t/master/t -o ~/bin/t
+    chmod +x ~/bin/t
+
+Set the location of your timelog file:
+
+    export $TIMELOG=$HOME/.timelog.ldg
+
+The default location is `$HOME/.timelog.ldg`.
+
 ## Usage ##
 
 Usage: `t <action>`
