@@ -1,10 +1,8 @@
 #!/bin/sh
 
-[ ! "$DEFAULT_TIMELOG_NAME" ] && DEFAULT_TIMELOG_NAME=".timelog.ldg"
-
 # Show current timelog
 _t_timelog() {
-  __t_current_timelog
+  echo "$timelog"
 }
 
 # Run a ledger command on the timelog
@@ -80,14 +78,8 @@ __t_extract_project() {
       }'
 }
 
-__t_current_timelog() {
-  [ ! -f "$config" ] && echo "$DEFAULT_TIMELOG_NAME" > "$config"
-  cat "$config"
-}
-
 action=$1; shift
-config="$HOME/.t"
-timelog="${HOME}/$(__t_current_timelog)"
+[ "$TIMELOG" ] && timelog="$TIMELOG" || timelog="${HOME}/.timelog.ldg"
 
 case "${action}" in
   in)   _t_in "$@";;
