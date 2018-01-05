@@ -8,7 +8,7 @@ t is a shell script for working with [ledger][]'s [timelog][] format.
 
 Download and install the script to a `bin` directory that exists in your `$PATH`. For example, `$HOME/bin`:
 
-    curl --silent -G https://raw.github.com/nuex/t/master/t -o ~/bin/t
+    curl --silent -L -G https://raw.github.com/nuex/t/master/t -o ~/bin/t
     chmod +x ~/bin/t
 
 Set the location of your timelog file:
