@@ -20,7 +20,7 @@ _t_do() {
 # Clock in to the last project if no project is given
 _t_in() {
   [ ! "$1" ] && set -- "$@" "$(_t_last)"
-  echo i `date '+%Y-%m-%d %H:%M:%S'` $* >> "$timelog"
+  echo i `date '+%Y-%m-%d %H:%M:%S'` "$*" >> "$timelog"
 }
 
 # Clock out
