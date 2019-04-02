@@ -25,13 +25,13 @@ _t_in() {
 
 # Clock out
 _t_out() {
-  echo o `date '+%Y-%m-%d %H:%M:%S'` $* >> "$timelog"
+  echo o `date '+%Y-%m-%d %H:%M:%S'` "$*" >> "$timelog"
 }
 
 # switch projects
 _t_sw() {
   echo o `date '+%Y-%m-%d %H:%M:%S'` >> "$timelog"
-  echo i `date '+%Y-%m-%d %H:%M:%S'` $* >> "$timelog"
+  echo i `date '+%Y-%m-%d %H:%M:%S'` "$*" >> "$timelog"
 }
 
 # Show the currently clocked-in project
