@@ -1,0 +1,55 @@
+#compdef t
+#description script for working with ledger-cli's timelog/timesheet format
+
+local curcontext="$curcontext" state state_descr line
+
+local -a commands
+commands=(
+  'in:clock into project or last project'
+  'out:clock out of project'
+  'sw:switch projects'
+  'switch:switch projects'
+  'bal:show balance'
+  'hours:show balance for today'
+  'edit:edit timelog file'
+  'cur:show currently open project'
+  'last:show last closed project'
+  'grep:grep timelog for argument'
+  'cat:show timelog'
+  'less:show timelog in pager'
+  'timelog:show timelog file'
+  )
+
+local curledger="${TIMELOG:-${HOME}/.timelog.ldg}"
+
+# Future todo: use a zstyle to define a glob or list of files of historical
+# ledgers, and zsh caching system to cache the parsed projects from those, so
+# that previous files' projects can be used too.
+
+_arguments -C : ':command:->command' '*::projects:->projects'
+case "$state" in 
+  (command)
+    _describe -t commands 'ledger timesheet t timelog commands' commands
+    ;;
+  (projects)
+    case "${line[1]}" in
+      (in|out|sw|switch)
+        local -a projects
+        # i 2017-07-30 18:49:19 project:subproject:subsub
+        projects=( ${${(M)${(f)"$(< $curledger )"}:#i *}##i ????-??-?? ??:??:?? } )
+        #local mostrecent secondmost
+        #mostrecent="${projects[-1]}"
+        #secondmost="${projects[-2]}"
+        # In future, for sw/switch bias for secondmost, for others bias for most
+        # Need to figure out the zsh compsys to say "all these are valid, but prefer this one"
+        typeset -U projects
+        _wanted projects expl 'existing timelog projects' compadd -a projects
+        ;;
+      (grep)
+        _arguments '*:pattern to grep timelog file for: '
+        ;;
+      (*)
+        ;;
+    esac
+    ;;
+esac
